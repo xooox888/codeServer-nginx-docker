@@ -1,1 +1,33 @@
+version: '3.8'
 
+services:
+  vscode:
+    build:
+      context: .
+      dockerfile: Dockerfile.vscode
+    volumes:
+      - vscode-data:/home/coder/project
+    networks:
+      - code_network
+    environment:
+      - PASSWORD=yourpassword
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - code_network
+    depends_on:
+      - vscode
+    volumes:
+      - ./nginx/ssl:/etc/nginx/ssl
+
+volumes:
+  vscode-data:
+
+networks:
+  code_network:
